@@ -40,21 +40,21 @@ public class AdControllerTest {
         adCampaign = new AdCampaign();
     }
     @Test
-    public void persistPerson_IsValid_PersonPersisted() throws Exception {
-        final String personDTOJson = jsonTester.write(adCampaign).getJson();
+    public void AdPersisted() throws Exception {
+        final String adCampaignJson = jsonTester.write(adCampaign).getJson();
         given(adService.addNewAd(any(AdCampaign.class))).willReturn(adCampaign);
         mockMvc
-            .perform(post("/persistPerson").content(personDTOJson).contentType(APPLICATION_JSON_UTF8))
+            .perform(post("/ads/newad").content(adCampaignJson).contentType(APPLICATION_JSON_UTF8))
             .andExpect(status().isCreated());
         verify(adService).addNewAd(any(AdCampaign.class));
     }
     @Test
-    public void persistPerson_IsNotValid_PersonNotPersisted() throws Exception {
-        final String personDTOJson = jsonTester.write(adCampaign).getJson();
+    public void AdNotPersisted() throws Exception {
+        final String adCampaignJson = jsonTester.write(adCampaign).getJson();
         given(adService.addNewAd(any(AdCampaign.class))).willReturn(null);
         mockMvc
-            .perform(post("/persistPerson").content(personDTOJson).contentType(APPLICATION_JSON_UTF8))
-            .andExpect(status().isIAmATeapot());
+            .perform(post("/ads/newad").content(adCampaignJson).contentType(APPLICATION_JSON_UTF8))
+            .andExpect(status().isBadRequest());
         verify(adService, times(0)).addNewAd(any(AdCampaign.class));
     }
 }
